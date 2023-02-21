@@ -1,4 +1,5 @@
 # Data-missingness-paper
+
 This repository contains all code and simulation scripts for the paper "Missing data in amortized simulation-based neural posterior estimation". It is divided into folders dedicated to the conducted numerical experiments.
 
 Regarding the content of these folders:

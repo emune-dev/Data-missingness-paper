@@ -65,8 +65,8 @@ def batch_simulator(prior_samples, n_obs):
         present_timepoints = time_points[present_indices]
 
         rhs = lambda x,t: fhn_dynamics(t, x, prior_samples[m])
-        sol = integrate.odeint(rhs, x0, present_timepoints)
-        sim_data[m, :, 0] = sol[:,0] + np.random.normal(0, sigma, size=n_present)
+        sol = integrate.odeint(rhs, x0, time_points)
+        sim_data[m, :, 0] = sol[present_indices,0] + np.random.normal(0, sigma, size=n_present)
         sim_data[m, :, 1] = present_timepoints  # time labels
     
     return sim_data   

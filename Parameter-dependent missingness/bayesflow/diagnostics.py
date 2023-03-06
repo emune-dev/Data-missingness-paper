@@ -11,11 +11,8 @@ from sklearn.metrics import r2_score, confusion_matrix, mean_squared_error
 from bayesflow.computational_utilities import expected_calibration_error
 
 
-def true_vs_estimated(theta_true, theta_est, param_names, figsize=(8, 4), show=True, filename=None, font_size=12):
+def true_vs_estimated(theta_true, theta_est, param_names, figsize=(8, 3.25)):
     """ Plots a scatter plot with abline of the estimated posterior means vs true values. """
-
-    # Plot settings
-    plt.rcParams['font.size'] = font_size
 
     # Determine n_subplots dynamically
     n_row = int(np.ceil(len(param_names) / 6))
@@ -46,7 +43,7 @@ def true_vs_estimated(theta_true, theta_est, param_names, figsize=(8, 4), show=T
                      horizontalalignment='left',
                      verticalalignment='center',
                      transform=axarr[j].transAxes,
-                     size=10)
+                     size=11)
         
         # Compute R2
         r2 = r2_score(theta_true[:, j], theta_est[:, j])
@@ -54,31 +51,27 @@ def true_vs_estimated(theta_true, theta_est, param_names, figsize=(8, 4), show=T
                      horizontalalignment='left',
                      verticalalignment='center',
                      transform=axarr[j].transAxes, 
-                     size=10)
+                     size=11)
         
         if j == 0:
             # Label plot
             axarr[j].set_xlabel('Estimated')
             axarr[j].set_ylabel('True')
-        axarr[j].set_title(param_names[j])
+        axarr[j].set_title(param_names[j], fontsize=11.5)
         axarr[j].spines['right'].set_visible(False)
         axarr[j].spines['top'].set_visible(False)
     
-    # Adjust spaces
     f.tight_layout()
-    if show:
-        plt.show()
-    # Save if specified
-    if filename is not None:
-        f.savefig("figures/{}_metrics.png".format(filename), dpi=600, bbox_inches='tight')
+    plt.show()
+    for fmt in ["png", "pdf"]:
+        f.savefig(f"figures/missingness_par_metrics.{fmt}", dpi=300, bbox_inches='tight')
     return f
 
 
-def plot_sbc(theta_samples, theta_test, param_names, bins=25, figsize=(8, 4), interval=0.99, show=True, filename=None, font_size=12):
+def plot_sbc(theta_samples, theta_test, param_names, bins=25, figsize=(8, 3.25), interval=0.99):
     """ Plots the simulation-based posterior checking histograms as advocated by Talts et al. (2018). """
 
     # Plot settings
-    plt.rcParams['font.size'] = font_size
     N = int(theta_test.shape[0])
 
     # Determine n_subplots dynamically
@@ -94,7 +87,7 @@ def plot_sbc(theta_samples, theta_test, param_names, bins=25, figsize=(8, 4), in
     ranks = np.sum(theta_samples < theta_test[:, np.newaxis, :], axis=1)
     
     # Compute interval
-    endpoints = binom.interval(interval, N, 1 / (bins))
+    endpoints = binom.interval(interval, N, 1 / bins)
 
     # Plot histograms
     for j in range(len(param_names)):
@@ -114,12 +107,9 @@ def plot_sbc(theta_samples, theta_test, param_names, bins=25, figsize=(8, 4), in
         axarr[j].set_ylabel('')
     
     f.tight_layout()
-    # Show, if specified
-    if show:
-        plt.show()
-    # Save if specified
-    if filename is not None:
-        f.savefig("figures/{}_SBC.png".format(filename), dpi=600, bbox_inches='tight')
+    plt.show()
+    for fmt in ["png", "pdf"]:
+        f.savefig(f"figures/missingness_par_SBC.{fmt}", dpi=300, bbox_inches='tight')
     return f
 
 
